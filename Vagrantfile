@@ -1,19 +1,27 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+VM_NAME = "vagrant-install-plugins"
+VAGRANT_BOX_NAME = "ubuntu/xenial-server-cloudimg-amd64-vagrant"
+VAGRANT_BOX_URL= "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box"
+VIRTUALBOX_MEMORY = "4096"
+VIRTUALBOX_CPU = "4"
+VAGRANT_VERSION = "2.0.1"
+VAGRANTFILE_API_VERSION = "2"
+ENV["LC_ALL"] = "en_US.UTF-8"
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
-Vagrant.configure("2") do |config|
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # The most common configuration options are documented and commented below.
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "ubuntu/xenial-server-cloudimg-amd64-vagrant"
-  config.vm.box_url = "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box"
+  config.vm.box = VAGRANT_BOX_NAME
+  config.vm.box_url = VAGRANT_BOX_URL
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -38,7 +46,12 @@ Vagrant.configure("2") do |config|
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
   # your network.
-  config.vm.network "public_network"
+  # config.vm.network "public_network"
+
+  config.vm.network "public_network", :type =>"dhcp" ,:bridge => 'eno1'
+
+
+
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -51,17 +64,17 @@ Vagrant.configure("2") do |config|
   # Example for VirtualBox:
   #
    config.vm.provider "virtualbox" do |vb|
-     # Display the VirtualBox GUI when booting the machine
-     vb.gui = false
-     vb.name = "openstack-kolla-all-in-oneop  "
-
-  #   # Customize the amount of memory on the VM:
-     vb.memory = "4096"
+    vb.name= VM_NAME
+    vb.gui = false
+    vb.memory = VIRTUALBOX_MEMORY
+    vb.cpus = VIRTUALBOX_CPU
    end
   #
   # View the documentation for the provider you are using for more
   # information on available options.
 
+
+  config.ssh.forward_env = ["TERM"]
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
