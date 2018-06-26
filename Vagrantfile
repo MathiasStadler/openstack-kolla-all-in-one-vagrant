@@ -53,7 +53,7 @@ Vagrant.configure("2") do |config|
    config.vm.provider "virtualbox" do |vb|
      # Display the VirtualBox GUI when booting the machine
      vb.gui = false
-     vb.name = "openstack-kolla-all-in-one"
+     vb.name = "openstack-kolla-all-in-oneop  "
 
   #   # Customize the amount of memory on the VM:
      vb.memory = "4096"
@@ -65,8 +65,17 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+     apt-get update
+     apt-get upgrade
+     apt-get autoremove
+     # apt-get install -y apache2
+     # set german locale
+     locale-gen de_DE.UTF-8
+     # install dependencys
+     apt-get install -y ansible python-pip python-dev libffi-dev gcc libssl-dev python-selinux python-setuptools
+     pip install -U pip
+     pip install -U ansible
+     # install pip
+   SHELL
 end
