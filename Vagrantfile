@@ -7,7 +7,13 @@ VIRTUALBOX_MEMORY = "4096"
 VIRTUALBOX_CPU = "4"
 VAGRANT_VERSION = "2.0.1"
 VAGRANTFILE_API_VERSION = "2"
+
+# set locale
 ENV["LC_ALL"] = "en_US.UTF-8"
+
+# ensure vagrant version
+Vagrant.require_version ">= #{VAGRANT_VERSION}"
+
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -87,7 +93,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     locale-gen de_DE.UTF-8
     # install dependencys
     apt-get install -y ansible python-pip python-dev libffi-dev gcc libssl-dev python-selinux python-setuptools
-    pip install -U pip
+    # pip install -U pip <= get error https://github.com/pypa/pip/issues/5240
+    python -m pip install --upgrade pip
     pip install -U ansible
     # save org orginal ansible.cfg
     cat /etc/ansible/ansible.cfg |grep -v '^#.*' |grep -v -e '^[[:space:]]*$' > /etc/ansible/ansible.cfg_onInstall
