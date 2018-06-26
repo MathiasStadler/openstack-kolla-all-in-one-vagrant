@@ -95,6 +95,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     apt-get install -y ansible python-pip python-dev libffi-dev gcc libssl-dev python-selinux python-setuptools
     # pip install -U pip <= get error https://github.com/pypa/pip/issues/5240
     python -m pip install --upgrade pip
+
+    # oslo-config 6.2.1 has requirement PyYAML>=3.12, but you'll have pyyaml 3.11 which is incompatible
+    apt-get instal libpython-dev
     pip install -U ansible
     # save org orginal ansible.cfg
     cat /etc/ansible/ansible.cfg |grep -v '^#.*' |grep -v -e '^[[:space:]]*$' > /etc/ansible/ansible.cfg_onInstall
