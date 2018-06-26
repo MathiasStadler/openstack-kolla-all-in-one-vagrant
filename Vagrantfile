@@ -113,5 +113,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     cp -r kolla-ansible/etc/kolla/* /etc/kolla
     # Copy the inventory files to the current directory. kolla-ansible holds inventory files ( all-in-one and multinode) in the ansible/inventory directory.
     cp kolla-ansible/ansible/inventory/*  /home/vagrant
+
     SHELL
 end
