@@ -66,16 +66,39 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-     apt-get update
-     apt-get upgrade
-     apt-get autoremove
-     # apt-get install -y apache2
-     # set german locale
-     locale-gen de_DE.UTF-8
-     # install dependencys
-     apt-get install -y ansible python-pip python-dev libffi-dev gcc libssl-dev python-selinux python-setuptools
-     pip install -U pip
-     pip install -U ansible
-     # install pip
-   SHELL
+    apt-get update
+    apt-get upgrade
+    apt-get autoremove
+    # apt-get install -y apache2
+    # set german locale
+    locale-gen de_DE.UTF-8
+    # install dependencys
+    apt-get install -y ansible python-pip python-dev libffi-dev gcc libssl-dev python-selinux python-setuptools
+    pip install -U pip
+    pip install -U ansible
+    # save org orginal ansible.cfg
+    cat /etc/ansible/ansible.cfg |grep -v '^#.*' |grep -v -e '^[[:space:]]*$' > /etc/ansible/ansible.cfg_onInstall
+    # settup kolla ansible.cfg
+    # TODO must be improved
+    echo "[defaults]" >/etc/ansible/ansible.cfg
+    echo "host_key_checking=False" >>/etc/ansible/ansible.cfg
+    echo "pipelining=True" >>/etc/ansible/ansible.cfg
+    echo "forks=100" >>/etc/ansible/ansible.cfg
+    # install kolla-ansible
+    pip install kolla-ansible
+    # Copy globals.yml and passwords.yml to /etc/kolla directory
+    cp -r /usr/local/share/kolla-ansible/etc_examples/kolla /etc/
+    cp /usr/local/share/kolla-ansible/ansible/inventory/* /home/vagrant
+    # clone repos
+    git clone https://github.com/openstack/kolla
+    git clone https://github.com/openstack/kolla-ansible
+    # Install requirements of kolla and kolla-ansible
+    pip install -r kolla/requirements.txt
+    pip install -r kolla-ansible/requirements.txt
+    # Copy the configuration files to /etc/kolla directory. kolla-ansible holds the configuration files ( globals.yml and passwords.yml) in etc/kolla
+    mkdir -p /etc/kolla
+    cp -r kolla-ansible/etc/kolla/* /etc/kolla
+    # Copy the inventory files to the current directory. kolla-ansible holds inventory files ( all-in-one and multinode) in the ansible/inventory directory.
+    cp kolla-ansible/ansible/inventory/*  /home/vagrant
+    SHELL
 end
